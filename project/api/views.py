@@ -22,7 +22,8 @@ def index():
         email = request.form['email']
         db.session.add(User(username=username, email=email))
         db.session.commit()
-    users = User.query.order_by(User.created_at.desc()).all()
+    users = User.query.order_by(User.created_at.asc()).all()
+
     return render_template('index.html', users=users)
 
 
@@ -35,6 +36,7 @@ def add_user():
             'status': 'fail',
             'message': 'Invalid payload.'
         }
+
         return jsonify(response_object), 400
 
     username = post_data.get('username')
@@ -60,6 +62,7 @@ def add_user():
             }
 
             return jsonify(response_object), 400
+
     except exc.IntegrityError as e:
         db.session.rollback()
         response_object = {
